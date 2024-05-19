@@ -46,13 +46,61 @@
     5. 返回response
     	
 
-- domian层【被application层进行调用】
+- domain层【被application层进行调用】
   - service【实现spec层的 IDomainService  接口】
 
-- spec层【规格约束层】
+  ```
+  1. domain层是如何通过依赖倒置模式与infrastructure层交互的
+  /**
+   * DDD Domain层和Infrastructure的粘合剂：通过依赖倒置.
+   *
+   * <p>domain层声明需要基础设施层实现的接口：RPC, DB, Cache, MQ等.</p>
+   * <p>为了方便产品人员查看领域层代码，梳理业务，统一放在facade package，减少对产品同学的干扰.</p>
+   */
+  package org.example.cp.oms.domain.facade;
+  
+  2. repository呢? 同理第一点
+  package org.example.cp.oms.domain.facade.repository;
+  
+  import org.example.cp.oms.domain.model.OrderMain;
+  
+  import javax.validation.constraints.NotNull;
+  
+  public interface IOrderRepository {
+  
+      void persist(@NotNull OrderMain orderModel);
+  
+      OrderMain getOrder(@NotNull Long orderId);
+  }
+  ```
+  
+  
+  
+- infrastructure层【基础架构层】
+  
+  - cache【缓存层】
+  
+  - manager
+  
+    - 进行DAO的调用，一个或多操作，要在同一个事务内完成插入
+  
+      
+  
+  - mq【消息队列层】
+  
+  - po【数据库实体层】
+  
+  - repository【经过translator转换获得PO对象后，调用manager进行DAO操作】
+  
+  - translator【转换层， domain model 转换为Mybatis使用的PO对象】
+  
+- spec层【规格约束层，使用于统一定义的类或者接口】
 
+  - ext
+  - exception
+  
   - model
-
+  
     ```
     1. IDomainModel  接口
     /**
@@ -91,5 +139,5 @@
      * </pre>
      */
     ```
+  
 
-    
